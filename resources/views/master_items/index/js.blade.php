@@ -53,6 +53,16 @@
                     })
                     array_temp.push(harga_jual)
                     array_temp.push(item.supplier)
+
+                    var foto = '-';
+
+                    if (item.foto) {
+                        foto = `<img src="{{url('uploads/master-items')}}/${item.foto}" 
+                                    alt="Foto ${item.nama}" 
+                                    style="width:60px;height:60px;object-fit:cover;">`;
+                    }
+
+                    array_temp.push(foto)
                     array_temp.push(html)
 
 

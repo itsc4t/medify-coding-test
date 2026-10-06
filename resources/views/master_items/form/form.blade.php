@@ -1,4 +1,4 @@
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     @csrf
     @if($method == 'edit')
     <div class="form-group">
@@ -46,6 +46,34 @@
             <optio @if($selected == 'Umum') selected @endif>Umum</option>
             <optio @if($selected == 'ATK') selected @endif>ATK</option>
         </select>
+    </div>
+
+    <div class="form-group">
+        <label>Kategori</label>
+
+        @php
+            $selectedCategories = [];
+
+            if ($method == 'edit' && $item) {
+                $selectedCategories = $item->categories->pluck('id')->toArray();
+            }
+        @endphp
+
+        <select class="form-control" name="categories[]" multiple>
+            @foreach($categories as $category)
+                <option value="{{ $category->id }}"
+                    @if(in_array($category->id, $selectedCategories))
+                        selected
+                    @endif>
+                    {{ $category->nama }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Foto</label>
+        <input type="file" class="form-control" name="foto" accept="image/*">
     </div>
 
     <button class="btn btn-primary mt-3">Submit</button>

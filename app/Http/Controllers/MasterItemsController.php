@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterItem;
+use App\Models\Category;
+
 use Illuminate\Http\Request;
 
 class MasterItemsController extends Controller
@@ -23,9 +25,17 @@ class MasterItemsController extends Controller
 
         if (!empty($kode)) $data_search = $data_search->where('kode', $kode);
         if (!empty($nama)) $data_search = $data_search->where('nama', 'LIKE', '%' . $nama . '%');
-        if (!empty($hargamin)) $data_search = $data_search->where('harga_beli', '>=', $hargamin)->where('harga_beli', '<=', $hargamax);
 
-        $data_search = $data_search->select('kode', 'nama', 'jenis', 'harga_beli', 'laba', 'supplier')->orderBy('id')->get();
+        //Filter harga max - min
+        if (!empty($hargamin)) {
+            $data_search = $data_search->where('harga_beli', '>=', $hargamin);
+        }
+
+        if (!empty($hargamax)) {
+            $data_search = $data_search->where('harga_beli', '<=', $hargamax);
+        }
+
+        $data_search = $data_search->select('kode', 'nama', 'jenis', 'harga_beli', 'laba', 'supplier', 'foto')->orderBy('id')->get();
 
 
         return json_encode([
@@ -43,6 +53,7 @@ class MasterItemsController extends Controller
         }
         $data['item'] = $item;
         $data['method'] = $method;
+        $data['categories'] = Category::orderBy('nama')->get();
         return view('master_items.form.index', $data);
     }
 
@@ -71,7 +82,21 @@ class MasterItemsController extends Controller
         $data_item->kode = $kode;
         $data_item->supplier = $request->supplier;
         $data_item->jenis = $request->jenis;
+
+        if ($request->hasFile('foto')) {
+            $foto = $request->file('foto');
+            $namaFoto = time() . '_' . $foto->getClientOriginalName();
+            $foto->move(public_path('uploads/master-items'), $namaFoto);
+            $data_item->foto = $namaFoto;
+        }
+        
         $data_item->save();
+
+        if ($request->has('categories')) {
+            $data_item->categories()->sync($request->categories);
+        } else {
+            $data_item->categories()->sync([]);
+        }
 
         return redirect('master-items');
     }
@@ -112,4 +137,6 @@ class MasterItemsController extends Controller
         $random = rand(0,4);
         return $array[$random];
     }
+
+    
 }

@@ -6,14 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class MasterItem extends Model
+class Category extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
-    //Relasi many to many ke table categories
-    public function categories()
+    protected $fillable = [
+        'kode', 
+        'nama',
+    ];
+
+    public function masterItems()
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(MasterItem::class);
     }
 }

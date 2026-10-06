@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,3 +32,11 @@ Route::get('/master-items/delete/{id}', [App\Http\Controllers\MasterItemsControl
 
 
 Route::get('/master-items/update-random-data', [App\Http\Controllers\MasterItemsController::class, 'updateRandomData']);
+
+Route::get('/categories', [App\Http\Controllers\CategoriesController::class, 'index']);
+Route::post('/categories', [App\Http\Controllers\CategoriesController::class, 'store']);
+Route::get('/categories/view/{id}', [App\Http\Controllers\CategoriesController::class, 'singleView']);
+Route::get('/categories/{id}/pdf', [App\Http\Controllers\CategoriesController::class, 'exportPdf']);
+Route::put('/categories/{id}', [App\Http\Controllers\CategoriesController::class, 'update']);
+Route::get('/categories/delete/{id}', [App\Http\Controllers\CategoriesController::class, 'delete']);
+
